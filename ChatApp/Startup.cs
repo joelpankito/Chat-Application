@@ -1,4 +1,6 @@
+using ChattingApp.Controllers;
 using ChattingApp.Data;
+using ChattingApp.Data.Entities;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;

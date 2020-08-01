@@ -58,12 +58,12 @@ namespace ChatApp.Controllers
         [HttpPost]
         public IActionResult EnterRoom(string name)
         {
-            var user = _context.Users.FirstOrDefault(user => user.Name == name);
-            if (user == null)
-            {
-                user = new User { Name = name };
-                _context.Users.Add(user);
-                _context.SaveChanges();
+            //var user = _context.Users.FirstOrDefault(user => user.Name == name);
+            //if (user == null)
+            //{
+            //    user = new User { Name = name };
+            //    _context.Users.Add(user);
+            //    _context.SaveChanges();
 
             // Get the claims values
             //var ID = identity.Claims.Where(c => c.Type == "ID")
