@@ -1,0 +1,110 @@
+﻿@model IEnumerable<ChattingApp.Data.Entities.Message>
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+    Layout = "_Layout";
+}
+<head>
+
+    <link rel="stylesheet" href="@Url.Content("~/Content/app.css")">
+</head>
+
+<body>
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">Chat - @ViewBag.currentUser </a>
+            </div>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="#">Log Out</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12 col-md-3">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="panel panel-default users__bar">
+                            <div class="panel-heading users__heading">
+                                Chat Users @ViewBag.allUsers.Count
+                            </div>
+
+                            <div class="panel-body users__body">
+                                <ul id="contacts" class="list-group">
+
+                                    @foreach (var user in @ViewBag.allUsers)
+                                    {
+                                        <a class="user__item contact-@user.Id" asp-action="Conversation" data-contact-id="@user.Id" data-contact-name="@user.Name">
+                                            <li>
+                                                <div class="avatar">
+                                                    <img src="@Url.Content("~/Content/no_avatar.png")">
+                                                </div>
+                                                <span>@user.Name</span>
+                                                <div class="status-bar"></div>
+                                            </li>
+                                        </a>
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+
+            <div class="col-xs-12 col-md-9 chat__body">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <ul class="list-group chat__main">
+                            @foreach (var item in Model)
+                            {
+                                <div>
+                                    <div id="msg-{{id}}" class="row __chat__par__">
+                                        @if (item.User.Name != ViewBag.currentUser)
+                                        {
+                                            <div class="__chat__ from__chat">
+                                                <p>@Html.DisplayFor(modelItem => item.Text)  @Html.DisplayFor(modelItem => item.User.Name)</p>
+                                                <p class="delivery-status">Delivered</p>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="__chat__ receive__chat">
+                                                <p>@Html.DisplayFor(modelItem => item.Text)  @Html.DisplayFor(modelItem => item.User.Name)</p>
+                                                <p class="delivery-status">Delivered</p>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            }
+                        </ul>
+                    </div>
+                    <div class="chat__type__body">
+                        <form asp-action="Send">
+                            <div class="chat__type">
+                                <textarea id="msg_box" type="Text" name="Message" placeholder="Type your message">
+                                    
+                                </textarea>
+                                <button type="submit" class="btn btn-primary" id="sendMessage" value="send">Send</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="chat__typing">
+                        <span id="typerDisplay"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+    <script src="@Url.Content("~/Content/app.js")"></script>
+    
+</body>
+
