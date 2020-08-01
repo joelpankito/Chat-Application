@@ -32,7 +32,7 @@ namespace ChatApp.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(string email, string password)
         {
-            var result = await _signInManager.PasswordSignInAsync(email, password, true, false);
+            var result = await _signInManager.PasswordSignInAsync(email, password, false, false);
 
             if (result.Succeeded)
             {

@@ -1,4 +1,5 @@
 using ChatApp.Data;
+using ChattingApp.Controllers;
 using ChattingApp.Data;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
@@ -39,6 +40,7 @@ namespace ChatApp
                         config.LoginPath = "/Account/Login";
                         config.LogoutPath = "/Account/Logout";
                     });
+            services.AddSignalR();
             services.AddControllersWithViews();
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
@@ -68,6 +70,7 @@ namespace ChatApp
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapHub<ChatHub>("/chathub");
             });
         }
     }
