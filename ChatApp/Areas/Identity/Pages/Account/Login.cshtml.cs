@@ -95,6 +95,7 @@ namespace ChatApp.Areas.Identity.Pages.Account
                     var claims = new List<Claim>
                     {
                         new Claim(ClaimTypes.Name, user.Name),
+                        new Claim("ID", user.Id),
                         new Claim(ClaimTypes.Role, "Administrator"),
                     };
 

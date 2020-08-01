@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
+using System.Threading;
 using System.Threading.Tasks;
 using ChattingApp.Data;
 using ChattingApp.Data.Entities;
@@ -26,7 +28,14 @@ namespace ChattingApp.Controllers
 
         public async Task SendMessage(string message, string id)
         {
-            var msg = new Message() { UserId = id, Text = message, Timestamp = DateTime.Now };
+            var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
+
+            // Get the claims values
+            var ID = identity.Claims.Where(c => c.Type == "ID")
+                               .Select(c => c.Value).SingleOrDefault();
+            var name = identity.Claims.Where(c => c.Type == ClaimTypes.Name)
+                   .Select(c => c.Value).SingleOrDefault();
+            var msg = new Message() { UserId = ID, Text = message, Timestamp = DateTime.Now };
             _context.Messages.Add(msg);
             _context.SaveChanges();
             var messages = _context.Messages

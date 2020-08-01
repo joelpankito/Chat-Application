@@ -12,7 +12,7 @@ using ChattingApp.Data.Entities;
 
 namespace ChatApp.Controllers
 {
-    [Authorize]
+    //[Authorize]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -38,7 +38,7 @@ namespace ChatApp.Controllers
         [HttpPost]
         public IActionResult Enter(string name)
         {
-            var User = _context.Users.Where(user => user.Name == name);
+            var User = _context.Users.Where(user => user.Email == name);
             //if (!User.Any()) 
             //{ 
             //    var user = new User() { Name = name, Timestamp = DateTime.Now };
@@ -61,17 +61,11 @@ namespace ChatApp.Controllers
         [HttpPost]
         public IActionResult EnterRoom(string name)
         {
-            var user = _context.Users.FirstOrDefault(user => user.Name == name);
-            if (user == null)
-            {
-                user = new User() { Name = name };
-                _context.Users.Add(user);
-                _context.SaveChanges();
+            var user = _context.Users.FirstOrDefault(user => user.Email == name);
+            
 
-            }
-
-            HttpContext.Response.Cookies.Append("userName", user.Name);
-            HttpContext.Response.Cookies.Append("userId", user.Id.ToString());
+            //HttpContext.Response.Cookies.Append("userName", user.Name);
+            //HttpContext.Response.Cookies.Append("userId", user.Id.ToString());
             return RedirectToAction("Room", "Chat");
         }
 
