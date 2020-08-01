@@ -61,8 +61,14 @@ namespace ChatApp.Controllers
         [HttpPost]
         public IActionResult EnterRoom(string name)
         {
-            var user = _context.Users.FirstOrDefault(user => user.Email == name);
-            
+            //var identity = HttpContext.User;
+
+            // Get the claims values
+            //var ID = identity.Claims.Where(c => c.Type == "ID")
+                               //.Select(c => c.Value).SingleOrDefault();
+            //var user = _context.Users.FirstOrDefault(u => u.Id == ID);
+            //user.Name = name;
+            //_context.SaveChanges();
 
             //HttpContext.Response.Cookies.Append("userName", user.Name);
             //HttpContext.Response.Cookies.Append("userId", user.Id.ToString());

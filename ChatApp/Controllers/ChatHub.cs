@@ -28,7 +28,7 @@ namespace ChattingApp.Controllers
 
         public async Task SendMessage(string message, string id)
         {
-            var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
+            var identity = _httpContextAccessor.HttpContext.User;
 
             // Get the claims values
             var ID = identity.Claims.Where(c => c.Type == "ID")
@@ -46,7 +46,7 @@ namespace ChattingApp.Controllers
                                         {
                                             Id = message.Id,
                                             Message = message.Text,
-                                            User = message.User.Name,
+                                            User = message.User.Email,
                                             DateTimeString = message.Timestamp.ToString("MM ddd, yyyy hh:mm")
                                         }).ToList();
             var messagesVM = new MessagesViewModel
@@ -67,7 +67,7 @@ namespace ChattingApp.Controllers
                                         {
                                             Id = message.Id,
                                             Message = message.Text,
-                                            User = message.User.Name,
+                                            User = message.User.Email,
                                             DateTimeString = message.Timestamp.ToString("MM ddd, yyyy hh:mm")
                                         }).ToList();
 

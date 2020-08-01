@@ -50,10 +50,10 @@ connection.start().then(function () {
 });
 
 document.getElementById("sendMessage").addEventListener("click", function (event) {
-    var user = getCookie("userName");
-    var user_id = getCookie("userId");
+    //var user = getCookie("userName");
+    //var user_id = getCookie("userId");
     var message = $("#msg_box").val();
-    connection.invoke("SendMessage", message, parseInt(user_id)).catch(function (err) {
+    connection.invoke("SendMessage", message, parseInt(1)).catch(function (err) {
         return console.error(err.toString());
     });
     event.preventDefault();
