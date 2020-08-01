@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using ChatApp.Models;
 using ChattingApp.Data;
-using Microsoft.AspNetCore.Authorization;
 using ChattingApp.Data.Entities;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace ChatApp.Controllers
 {
@@ -64,14 +61,14 @@ namespace ChatApp.Controllers
             var user = _context.Users.FirstOrDefault(user => user.Name == name);
             if (user == null)
             {
-                user = new User() { Name = name };
+                user = new User { Name = name };
                 _context.Users.Add(user);
                 _context.SaveChanges();
 
             }
 
             HttpContext.Response.Cookies.Append("userName", user.Name);
-            HttpContext.Response.Cookies.Append("userId", user.Id.ToString());
+            HttpContext.Response.Cookies.Append("userId", user.Id);
             return RedirectToAction("Room", "Chat");
         }
 

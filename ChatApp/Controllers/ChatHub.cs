@@ -26,14 +26,14 @@ namespace ChattingApp.Controllers
 
         public async Task SendMessage(string message, string id)
         {
-            var msg = new Message() { UserId = id, Text = message, Timestamp = DateTime.Now };
+            var msg = new Message { UserId = id, Text = message, Timestamp = DateTime.Now };
             _context.Messages.Add(msg);
             _context.SaveChanges();
             var messages = _context.Messages
                                    .Include(x => x.User)
                                    .Where(x => x.Id == msg.Id)
                                    .Select(message =>
-                                        new MessageViewModel()
+                                        new MessageViewModel
                                         {
                                             Id = message.Id,
                                             Message = message.Text,
@@ -54,7 +54,7 @@ namespace ChattingApp.Controllers
             var messages = _context.Messages
                                    .Include(x => x.User)
                                    .Select(message =>
-                                        new MessageViewModel()
+                                        new MessageViewModel
                                         {
                                             Id = message.Id,
                                             Message = message.Text,
@@ -73,7 +73,7 @@ namespace ChattingApp.Controllers
 
         public async Task LoadUsers(string id)
         {
-            var user = _context.Users.Where(x => x.Id == id).Select(x => new UserViewModel()
+            var user = _context.Users.Where(x => x.Id == id).Select(x => new UserViewModel
             {
                 Id = x.Id,
                 Name = x.Name
@@ -81,7 +81,7 @@ namespace ChattingApp.Controllers
 
             //await Clients.User.
             //_users.Add(user);
-            var UsersVM = new UsersViewModel() { Users = user };
+            var UsersVM = new UsersViewModel { Users = user };
 
             await Clients.All.SendAsync("UserStatus", UsersVM, "active");
         }

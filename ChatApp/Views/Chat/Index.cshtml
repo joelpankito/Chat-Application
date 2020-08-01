@@ -34,7 +34,7 @@
                             <div class="panel-body users__body">
                                 <ul id="contacts" class="list-group">
 
-                                    @foreach (var user in @ViewBag.allUsers)
+                                    @foreach (var user in ViewBag.allUsers)
                                     {
                                         <a class="user__item contact-@user.Id" asp-action="Conversation" data-contact-id="@user.Id" data-contact-name="@user.Name">
                                             <li>

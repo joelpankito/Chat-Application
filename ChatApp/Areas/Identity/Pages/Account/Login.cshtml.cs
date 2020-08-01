@@ -1,19 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Text.Encodings.Web;
+using System.Security.Claims;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
 using ChattingApp.Data.Entities;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using System.Security.Claims;
 
 namespace ChatApp.Areas.Identity.Pages.Account
 {
@@ -101,29 +98,7 @@ namespace ChatApp.Areas.Identity.Pages.Account
                     var claimsIdentity = new ClaimsIdentity(
                         claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
-                    var authProperties = new AuthenticationProperties
-                    {
-                        //AllowRefresh = <bool>,
-                        // Refreshing the authentication session should be allowed.
-
-                        //ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(10),
-                        // The time at which the authentication ticket expires. A 
-                        // value set here overrides the ExpireTimeSpan option of 
-                        // CookieAuthenticationOptions set with AddCookie.
-
-                        //IsPersistent = true,
-                        // Whether the authentication session is persisted across 
-                        // multiple requests. When used with cookies, controls
-                        // whether the cookie's lifetime is absolute (matching the
-                        // lifetime of the authentication ticket) or session-based.
-
-                        //IssuedUtc = <DateTimeOffset>,
-                        // The time at which the authentication ticket was issued.
-
-                        //RedirectUri = <string>
-                        // The full path or absolute URI to be used as an http 
-                        // redirect response value.
-                    };
+                    var authProperties = new AuthenticationProperties();
 
                     await HttpContext.SignInAsync(
                         CookieAuthenticationDefaults.AuthenticationScheme,
@@ -135,18 +110,16 @@ namespace ChatApp.Areas.Identity.Pages.Account
                 }
                 if (result.RequiresTwoFactor)
                 {
-                    return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, RememberMe = Input.RememberMe });
+                    return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, Input.RememberMe });
                 }
                 if (result.IsLockedOut)
                 {
                     _logger.LogWarning("User account locked out.");
                     return RedirectToPage("./Lockout");
                 }
-                else
-                {
-                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-                    return Page();
-                }
+
+                ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                return Page();
             }
 
             // If we got this far, something failed, redisplay form
@@ -161,7 +134,7 @@ namespace ChatApp.Areas.Identity.Pages.Account
 
             await Task.Delay(500);
 
-            return new User()
+            return new User
             {
                 Name = email
             };
