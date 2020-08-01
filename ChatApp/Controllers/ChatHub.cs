@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using ChattingApp.Data;
+using ChatApp.Data;
 using ChattingApp.Data.Entities;
 using ChattingApp.ViewModels;
 using Microsoft.AspNetCore.Http;
@@ -29,6 +29,7 @@ namespace ChattingApp.Controllers
             var msg = new Message { UserId = id, Text = message, Timestamp = DateTime.Now };
             _context.Messages.Add(msg);
             _context.SaveChanges();
+
             var messages = _context.Messages
                                    .Include(x => x.User)
                                    .Where(x => x.Id == msg.Id)
@@ -37,7 +38,7 @@ namespace ChattingApp.Controllers
                                         {
                                             Id = message.Id,
                                             Message = message.Text,
-                                            User = message.User.Name,
+                                            User = message.User.Email,
                                             DateTimeString = message.Timestamp.ToString("MM ddd, yyyy hh:mm")
                                         }).ToList();
             var messagesVM = new MessagesViewModel
@@ -58,7 +59,7 @@ namespace ChattingApp.Controllers
                                         {
                                             Id = message.Id,
                                             Message = message.Text,
-                                            User = message.User.Name,
+                                            User = message.User.Email,
                                             DateTimeString = message.Timestamp.ToString("MM ddd, yyyy hh:mm")
                                         }).ToList();
 
@@ -76,7 +77,7 @@ namespace ChattingApp.Controllers
             var user = _context.Users.Where(x => x.Id == id).Select(x => new UserViewModel
             {
                 Id = x.Id,
-                Name = x.Name
+                Name = x.Email
             });
 
             //await Clients.User.

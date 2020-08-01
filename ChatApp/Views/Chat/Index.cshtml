@@ -63,17 +63,17 @@
                             {
                                 <div>
                                     <div id="msg-{{id}}" class="row __chat__par__">
-                                        @if (item.User.Name != ViewBag.currentUser)
+                                        @if (item.User.Email != ViewBag.currentUser)
                                         {
                                             <div class="__chat__ from__chat">
-                                                <p>@Html.DisplayFor(modelItem => item.Text)  @Html.DisplayFor(modelItem => item.User.Name)</p>
+                                                <p>@Html.DisplayFor(modelItem => item.Text)  @Html.DisplayFor(modelItem => item.User.Email)</p>
                                                 <p class="delivery-status">Delivered</p>
                                             </div>
                                         }
                                         else
                                         {
                                             <div class="__chat__ receive__chat">
-                                                <p>@Html.DisplayFor(modelItem => item.Text)  @Html.DisplayFor(modelItem => item.User.Name)</p>
+                                                <p>@Html.DisplayFor(modelItem => item.Text)  @Html.DisplayFor(modelItem => item.User.Email)</p>
                                                 <p class="delivery-status">Delivered</p>
                                             </div>
                                         }
