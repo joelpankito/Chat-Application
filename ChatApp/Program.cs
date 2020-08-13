@@ -1,3 +1,4 @@
+using ChatApp.Data;
 using ChattingApp.Data;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
