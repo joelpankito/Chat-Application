@@ -1,10 +1,11 @@
 ﻿using ChattingApp.Data.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace ChattingApp.Data
+namespace ChatApp.Data
 {
-    public class ChatContext : IdentityDbContext<User>
+    public class ChatContext : IdentityDbContext<IdentityUser>
     {
         public ChatContext(DbContextOptions<ChatContext> options) : base(options)
         {

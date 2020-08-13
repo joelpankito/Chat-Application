@@ -2,12 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
-using System.Threading;
 using System.Threading.Tasks;
-using ChattingApp.Data;
+using ChatApp.Data;
 using ChattingApp.Data.Entities;
 using ChattingApp.ViewModels;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,28 +14,20 @@ namespace ChattingApp.Controllers
     public class ChatHub : Hub
     {
         private readonly ChatContext _context;
-        private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly List<string> _users;
+        private readonly static List<string> _users = new List<string>();
 
-        public ChatHub(ChatContext context, IHttpContextAccessor httpContextAccessor)
+        public ChatHub(ChatContext context)
         {
             _context = context;
-            _httpContextAccessor = httpContextAccessor;
-            _users = new List<string>();
         }
 
-        public async Task SendMessage(string message, string id)
+        public async Task SendMessage(string message)
         {
-            var identity = _httpContextAccessor.HttpContext.User;
-
-            // Get the claims values
-            var ID = identity.Claims.Where(c => c.Type == "ID")
-                               .Select(c => c.Value).SingleOrDefault();
-            var name = identity.Claims.Where(c => c.Type == ClaimTypes.Name)
-                   .Select(c => c.Value).SingleOrDefault();
-            var msg = new Message() { UserId = ID, Text = message, Timestamp = DateTime.Now };
+            var user = _context.Users.FirstOrDefault(e => e.Email == Context.User.FindFirst(ClaimTypes.Email).Value);
+            var msg = new Message { UserId = user.Id, Text = message, Timestamp = DateTime.Now };
             _context.Messages.Add(msg);
             _context.SaveChanges();
+
             var messages = _context.Messages
                                    .Include(x => x.User)
                                    .Where(x => x.Id == msg.Id)
@@ -74,36 +64,32 @@ namespace ChattingApp.Controllers
             var messagesVM = new MessagesViewModel
             {
                 Messages = messages,
-                LastMessageId = messages.Last().Id
+                LastMessageId = messages.Count == 0 ? 0 : messages.Last().Id
             };
 
             await Clients.All.SendAsync("ReceiveMessage", messagesVM);
         }
 
-        public async Task LoadUsers(string id)
+        public async Task LoadUsers()
         {
-            var user = _context.Users.Where(x => x.Id == id).Select(x => new UserViewModel
-            {
-                Id = x.Id,
-                Name = x.Name
-            });
-
-            //await Clients.User.
-            //_users.Add(user);
-            var UsersVM = new UsersViewModel { Users = user };
-
-            await Clients.All.SendAsync("UserStatus", UsersVM, "active");
+            await Clients.All.SendAsync("DisplayUsers", _users);
         }
 
-        public override Task OnConnectedAsync()
+        public override async Task OnConnectedAsync()
         {
-            _users.Add(Context.ConnectionId);
-            return base.OnConnectedAsync();
+            var user = Context.User.FindFirst(ClaimTypes.Email).Value;
+            _users.Add(user);
+            
+            await base.OnConnectedAsync();
         }
-        public override Task OnDisconnectedAsync(Exception exception)
+        public override async Task OnDisconnectedAsync(Exception exception)
         {
-            _users.Remove(Context.ConnectionId);
-            return base.OnDisconnectedAsync(exception);
+            var user = Context.User.FindFirst(ClaimTypes.Email).Value;
+            _users.Remove(user);
+
+            await LoadUsers();
+
+            await base.OnDisconnectedAsync(exception);
         }
     }
 }

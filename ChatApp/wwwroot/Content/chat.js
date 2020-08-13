@@ -15,23 +15,21 @@ connection.on("ReceiveMessage", function (msg) {
     updateScroll();
 });
 
-connection.on("UserStatus", function (usr) {
-    //console.log(usr)
+connection.on("DisplayUsers", function (users) {
     var usrDiv = "";
-    $.each(usr.users, function (key, user) {
-        //console.log(value); //this outputs response as Objects shown above
+    $(".list_of_users").empty();
 
-            usrDiv += '<a class="user__item contact-' + user.id + '" >'
+    $.each(users, function (key, user) {
+
+            usrDiv += '<a class="user__item contact-' + user + '" >'
                 + '<li>'
                 + '<div class="avatar">'
                 + '<img src="/Content/no_avatar.png">'
                 + '</div>'
-                + '<span>' + user.name + '</span>'
+                + '<span>' + user + '</span>'
                 + '<div class="status-bar active"></div>'
                 + '</li>'
                 + '</a>';
-
-
     });
 
     $(".list_of_users").append(usrDiv);  // Append the results
@@ -42,7 +40,7 @@ connection.start().then(function () {
     connection.invoke("LoadMessages").catch(function (err) {
         return console.error(err.toString());
     });
-    connection.invoke("LoadUsers", parseInt(getCookie("userId"))).catch(function (err) {
+    connection.invoke("LoadUsers").catch(function (err) {
         return console.error(err.toString());
     });
 }).catch(function (err) {
@@ -50,15 +48,26 @@ connection.start().then(function () {
 });
 
 document.getElementById("sendMessage").addEventListener("click", function (event) {
-    //var user = getCookie("userName");
-    var user_id = getCookie("userId");
-    var message = $("#msg_box").val();
-    connection.invoke("SendMessage", message, parseInt(user_id)).catch(function (err) {
-        return console.error(err.toString());
-    });
+    sendMessage();
     event.preventDefault();
 });
 
+$("#msg_box").on('keypress', function (e) {
+    if (e.which == 13) {
+        sendMessage();
+        e.preventDefault();
+    }
+});
+
+function sendMessage() {
+    var message = $("#msg_box").val();
+
+    connection.invoke("SendMessage", message).catch(function (err) {
+        return console.error(err.toString());
+    });
+
+    $("#msg_box").val("");
+}
 
 function msgDiv(id, message) {
 
@@ -94,18 +103,14 @@ function loadmessages(msg) {
     var messages = "";
 
     $.each(msg, function (key, msg) {
-
         messages += msgDiv(key, msg);
-        //console.log(msg);
-
     });
 
 
     $(".chat__main").append(messages);
-
-
 }
 
 function updateScroll() {
     $(".chat__body").scrollTop(document.querySelector(".chat__body").scrollHeight)
 }
+

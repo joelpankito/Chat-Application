@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Identity;
 
 namespace ChattingApp.Data.Entities
 {
@@ -7,6 +8,6 @@ namespace ChattingApp.Data.Entities
         public string Text { get; set; }
         [ForeignKey(nameof(User))]
         public string UserId { get; set; }
-        public User User { get; set; }
+        public IdentityUser User { get; set; }
     }
 }
