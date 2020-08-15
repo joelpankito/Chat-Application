@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -39,13 +40,23 @@ namespace ChattingApp.Controllers
                                             User = message.User.Email,
                                             DateTimeString = message.Timestamp.ToString("MM ddd, yyyy hh:mm")
                                         }).ToList();
+            var senderMessagesVM = new MessagesViewModel
+            {
+                Messages = messages,
+                LastMessageId = messages.Count == 0 ? 0 : messages.Last().Id,
+                SendMsgStatus = "sent"
+            };
+
             var messagesVM = new MessagesViewModel
             {
                 Messages = messages,
-                LastMessageId = messages.Last().Id
+                LastMessageId = messages.Count == 0 ? 0 : messages.Last().Id,
+                SendMsgStatus = "receved"
             };
 
-            await Clients.All.SendAsync("ReceiveMessage", messagesVM);
+            await Clients.Caller.SendAsync("ReceiveMessage", senderMessagesVM);
+            await Clients.Others.SendAsync("ReceiveMessage", messagesVM);
+
         }
 
         public async Task LoadMessages()
@@ -58,8 +69,10 @@ namespace ChattingApp.Controllers
                                             Id = message.Id,
                                             Message = message.Text,
                                             User = message.User.Email,
-                                            DateTimeString = message.Timestamp.ToString("MM ddd, yyyy hh:mm")
+                                            DateTimeString = message.Timestamp.ToString("MM ddd, yyyy hh:mm"),
+                                            LoadMsgStatus = Status(message.User.Email)
                                         }).ToList();
+
 
             var messagesVM = new MessagesViewModel
             {
@@ -67,7 +80,8 @@ namespace ChattingApp.Controllers
                 LastMessageId = messages.Count == 0 ? 0 : messages.Last().Id
             };
 
-            await Clients.All.SendAsync("ReceiveMessage", messagesVM);
+            await Clients.Caller.SendAsync("ReceiveMessage", messagesVM);
+            
         }
 
         public async Task LoadUsers()
@@ -90,6 +104,20 @@ namespace ChattingApp.Controllers
             await LoadUsers();
 
             await base.OnDisconnectedAsync(exception);
+        }
+
+        private string Status(string user)
+        {
+            if (user == Context.User.FindFirst(ClaimTypes.Email).Value)
+            {
+                return "sent";
+            }
+            else
+            {
+                return "recived";
+            }
+            
+            
         }
     }
 }

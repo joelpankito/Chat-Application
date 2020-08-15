@@ -5,11 +5,13 @@ var connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
 //Disable send button until connection is established
 document.getElementById("sendMessage").disabled = true;
 
-connection.on("ReceiveMessage", function (msg) {
+connection.on("ReceiveMessage", function (messages) {
     var message = "";
-    $.each(msg.messages, function (key, msg) {
+    
+    $.each(messages.messages, function (key, msg) {
         console.log(msg);
-        message += msgDiv(key, msg);
+        var status = messages.sendMsgStatus == null ? msg.LoadMsgStatus : messages.sendMsgStatus;
+        message += msgDiv(key, msg, status);
     });
     $(".chat__main").append(message);
     updateScroll();
@@ -69,10 +71,10 @@ function sendMessage() {
     $("#msg_box").val("");
 }
 
-function msgDiv(id, message) {
+function msgDiv(id, message, status) {
 
     var msgDiv = "";
-    if (message.user == getCookie("userName")) {
+    if (status == "sent") {
         msgDiv += '<div id="dateStr-' + id + '">' + message.dateTimeString + '<div id="msg-' + message.id + '" class="row __chat__par__"> <div class="__chat__ receive__chat"> <p>'
             + message.user + ': ' + message.message + '</p> <p class="delivery-status">Delivered</p> </div> </div> </div>';
     }

@@ -57,7 +57,7 @@ function loadmessages(msg) {
 function msgDiv(id,message) {
 
     var msgDiv = "";
-    if (message.user == getCookie("userName")) {
+    if (message.status == "sent") {
         msgDiv += '<div id="dateStr-' + id + '">' + message.dateTimeString + '<div id="msg-' + message.id + '" class="row __chat__par__"> <div class="__chat__ receive__chat"> <p>'
             + message.user + ': ' + message.message + '</p> <p class="delivery-status">Delivered</p> </div> </div> </div>';
     }

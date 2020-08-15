@@ -6,5 +6,6 @@
         public string Message { get; set; }
         public string DateTimeString { get; set; }
         public string User { get; set; }
+        public string LoadMsgStatus { get; set; }
     }
 }

@@ -25,6 +25,8 @@ namespace ChatApp
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ChatContext>(options => options.UseInMemoryDatabase("InMemory"));
+            //services.AddDbContext<ChatContext>(options =>
+                //options.UseSqlServer(Configuration.GetConnectionString("ChatApp")));
             services.AddDefaultIdentity<IdentityUser>(options =>
                 {
                     options.SignIn.RequireConfirmedAccount = false;
