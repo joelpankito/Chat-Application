@@ -10,7 +10,7 @@ connection.on("ReceiveMessage", function (messages) {
     
     $.each(messages.messages, function (key, msg) {
         console.log(msg);
-        var status = messages.sendMsgStatus == null ? msg.LoadMsgStatus : messages.sendMsgStatus;
+        var status = messages.sendMsgStatus == null ? msg.loadMsgStatus : messages.sendMsgStatus;
         message += msgDiv(key, msg, status);
     });
     $(".chat__main").append(message);
@@ -75,7 +75,7 @@ function msgDiv(id, message, status) {
 
     var msgDiv = "";
     if (status == "sent") {
-        msgDiv += '<div id="dateStr-' + id + '">' + message.dateTimeString + '<div id="msg-' + message.id + '" class="row __chat__par__"> <div class="__chat__ receive__chat"> <p>'
+        msgDiv += '<div id="dateStr-' + id + '" style="display: contents;">' + message.dateTimeString + '<div id="msg-' + message.id + '" class="row __chat__par__"> <div class="__chat__ receive__chat"> <p>'
             + message.user + ': ' + message.message + '</p> <p class="delivery-status">Delivered</p> </div> </div> </div>';
     }
     else {
