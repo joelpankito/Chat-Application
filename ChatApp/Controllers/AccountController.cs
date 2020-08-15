@@ -78,5 +78,20 @@ namespace ChatApp.Controllers
 
             return View(new User());
         }
+
+        [HttpPost]
+        public async Task<IActionResult> Logout(string returnUrl = null)
+        {
+            await _signInManager.SignOutAsync();
+            await HttpContext.SignOutAsync(
+            CookieAuthenticationDefaults.AuthenticationScheme);
+
+            if (returnUrl != null)
+            {
+                return LocalRedirect(returnUrl);
+            }
+
+            return RedirectToAction("Login");
+        }
     }
 }
